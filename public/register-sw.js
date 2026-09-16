@@ -18,7 +18,7 @@ async function registerSW() {
 		)
 			throw new Error("Service workers cannot be registered without https.");
 
-		throw new Error("Your browser doesn't support service workers.");
+		throw new Error("Your browser doesn't support service workers and/or they have been blocked.");
 	}
 
 	await navigator.serviceWorker.register(stockSW);
