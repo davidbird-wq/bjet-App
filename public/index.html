@@ -1,4 +1,11 @@
 <html lang="en"><head>
+	<script src="/scram/scramjet.all.js"></script>
+	<script src="/baremux/index.js"></script>
+	<link rel="stylesheet" href="index.css" />
+	<script src="register-sw.js" defer></script>
+	<script src="search.js" defer></script>
+	<script src="index.js" defer></script>
+
 	<script async="" src="/bu1m/"></script><script async="" src="/bu1m/"></script><script>
 		(function(w, i, g) {
 			w[g] = w[g] || []; if (typeof w[g].push == 'function')w[g].push(i)})
@@ -14,7 +21,7 @@
 			f.parentNode.insertBefore(j, f);
 		})(window, document, 'script', 'dataLayer');
 	</script>
-	<meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="ie=edge"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><script src="https://accounts.google.com/gsi/client" async=""></script>
+	<title>DeltaMath</title><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="ie=edge"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><script src="https://accounts.google.com/gsi/client" async=""></script>
 <meta data-react-helmet="true" name="theme-color" content="#ffffff"><meta data-react-helmet="true" name="msapplication-TileColor" content="#2b5797"><meta data-react-helmet="true" name="description" content="Math done right"><meta name="generator" content="Gatsby 4.10.2"><style data-href="/gatsby-styles.6cba02cac0b689b4c9bc.css" data-identity="gatsby-global-css">
 @import url(https://fonts.googleapis.com/css2?family=Rubik&display=swap);@import url(https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;500;600;700&display=swap);.slick-slider {
 -webkit-touch-callout: none;
@@ -713,11 +720,17 @@ background-image: url('/static/6695195f1dbf78bde0edd50749d630e7/fb974/ForHomeMai
 <h2 class="index__hero-sub-header"><span>Built by teachers.</span> <span>Used by millions.</span></h2>
 </div>
 </div>
-<div class="index__hero-buttons">
-<a><button type="button" class="rmd-button rmd-button--text rmd-button--contained rmd-button--secondary index__hero-button">		<form id="sj-form" class="flex-center">
-			<input id="sj-search-engine" value="https://www.google.com/search?q=%s" type="hidden">
-			<input id="sj-address" type="text" placeholder="Find a cool lesson">
-		</form><span class="rmd-ripple-container"></span></button></a><a href="deltamath.com"><button type="button" class="rmd-button rmd-button--text rmd-button--contained rmd-button--secondary index__hero-button">Check for pricing<span class="rmd-ripple-container"></span></button></a>
+<div class="index__hero-buttons" style="display:flex;flex-direction:column;align-items:center;gap:16px;width:100%;max-width:520px;margin:0 auto;">
+<form id="sj-form" class="flex-center" style="width:100%;display:flex;gap:8px;">
+	<input id="sj-search-engine" value="https://www.google.com/search?q=%s" type="hidden">
+	<input id="sj-address" type="text" placeholder="Find a cool lesson" style="flex:1;min-height:48px;padding:12px 16px;border-radius:8px;border:none;font-size:16px;outline:none;">
+	<button type="submit" class="rmd-button rmd-button--text rmd-button--contained rmd-button--secondary index__hero-button" style="min-height:48px;white-space:nowrap;">Search<span class="rmd-ripple-container"></span></button>
+</form>
+<a href="https://www.deltamath.com" target="_blank"><button type="button" class="rmd-button rmd-button--text rmd-button--contained rmd-button--secondary index__hero-button">Check for pricing<span class="rmd-ripple-container"></span></button></a>
+<div class="desc" style="color:#fff;text-align:center;margin-top:8px;">
+	<p id="sj-error"></p>
+	<pre id="sj-error-code"></pre>
+</div>
 </div>
 </div>
 </section>
