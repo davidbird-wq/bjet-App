@@ -8,99 +8,97 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: linear-gradient(135deg, #1a2a3a 0%, #273e4f 50%, #1e3a5f 100%);
+      background: #f0f2f5;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #fff;
+      color: #1a1a1a;
     }
     .login-box {
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 16px;
-      padding: 2.5rem;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 2.25rem 2rem;
       width: 100%;
-      max-width: 380px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      max-width: 360px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
     }
     h1 {
-      font-size: 1.75rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.35rem;
       text-align: center;
+      color: #1a1a1a;
     }
     .subtitle {
       text-align: center;
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 0.95rem;
-      margin-bottom: 1.75rem;
+      color: #6b7280;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
     }
     label {
       display: block;
-      font-size: 0.875rem;
-      margin-bottom: 0.5rem;
-      color: rgba(255, 255, 255, 0.85);
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-bottom: 0.4rem;
+      color: #4b5563;
     }
     input[type="password"] {
       width: 100%;
-      padding: 0.85rem 1rem;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 0.75rem 0.9rem;
+      border: 1px solid #d1d5db;
       border-radius: 8px;
-      background: rgba(0, 0, 0, 0.25);
-      color: #fff;
+      background: #f9fafb;
+      color: #1a1a1a;
       font-size: 1rem;
       outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
     input[type="password"]:focus {
-      border-color: #4a90d9;
-      box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.3);
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+      background: #fff;
     }
     button {
       width: 100%;
-      margin-top: 1.25rem;
-      padding: 0.9rem;
+      margin-top: 1.1rem;
+      padding: 0.8rem;
       border: none;
       border-radius: 8px;
-      background: #2b5797;
+      background: #1e40af;
       color: #fff;
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
+      transition: background 0.15s;
     }
-    button:hover {
-      background: #3a6bb0;
-    }
-    button:active {
-      transform: scale(0.98);
-    }
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
+    button:hover { background: #1e3a8a; }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
     .error {
-      margin-top: 1rem;
-      padding: 0.75rem;
-      background: rgba(220, 53, 69, 0.2);
-      border: 1px solid rgba(220, 53, 69, 0.4);
+      margin-top: 0.9rem;
+      padding: 0.65rem;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
       border-radius: 8px;
-      color: #ff8a8a;
-      font-size: 0.9rem;
+      color: #b91c1c;
+      font-size: 0.875rem;
       text-align: center;
       display: none;
     }
-    .error.visible {
-      display: block;
-    }
+    .error.visible { display: block; }
     .loading {
       text-align: center;
-      margin-top: 1rem;
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 0.9rem;
+      margin-top: 0.9rem;
+      color: #6b7280;
+      font-size: 0.875rem;
       display: none;
+    }
+    .debug {
+      margin-top: 1rem;
+      font-size: 0.75rem;
+      color: #9ca3af;
+      text-align: center;
+      word-break: break-all;
     }
   </style>
 </head>
@@ -113,19 +111,37 @@
       <input type="password" id="password" name="password" autocomplete="current-password" required autofocus />
       <button type="submit" id="submitBtn">Unlock</button>
     </form>
-    <div class="error" id="errorMsg">Incorrect password. Please try again.</div>
+    <div class="error" id="errorMsg"></div>
     <div class="loading" id="loadingMsg">Checking…</div>
+    <div class="debug" id="debugInfo"></div>
   </div>
 
   <script>
-    // The original DeltaMath index.html content (to be written after successful auth)
-    const ORIGINAL_HTML = `<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="apple-touch-icon" sizes="180x180" href="/app/manager/apple-touch-icon.png" /><link rel="icon" type="image/png" sizes="32x32" href="/app/manager/favicon-32x32.png" /><link rel="icon" type="image/png" sizes="16x16" href="/app/manager/favicon-16x16.png" /><link rel="manifest" href="/app/manager/site.webmanifest" /><link rel="mask-icon" href="/app/manager/safari-pinned-tab.svg" color="#273e4f" /><link rel="stylesheet" href="/app/manager/assets/desmos-mathquill/mathquill.css" /><link rel="stylesheet" href="/app/manager/assets/prism/prism.css" /><link href="/app/manager/assets/fontawesome-5/css/fontawesome.min.css" rel="stylesheet" /><link href="/app/manager/assets/fontawesome-5/css/solid.min.css" rel="stylesheet" /><link href="/app/manager/assets/fontawesome-5/css/regular.min.css" rel="stylesheet" /><link href="/app/manager/assets/fontawesome-5/css/light.min.css" rel="stylesheet" /><link href="/app/manager/assets/fontawesome-5/css/duotone.min.css" rel="stylesheet" /><link href="/app/manager/fonts.css" rel="stylesheet" /><meta name="msapplication-TileColor" content="#2b5797"/><meta name="theme-color" content="#ffffff"/><script>window.legacyScriptErrors=[],window.addEventListener("error",function(r){var e=r.target&&"SCRIPT"===r.target.tagName?r.target.src:r.filename||"";window.legacyScriptErrors&&/\\/(global|assets)\\//.test(e)&&window.legacyScriptErrors.push({src:e,message:r.message||"failed to load"})},!0)<\/script><script src="/app/manager/assets/fastclick/lib/fastclick.js"><\/script><link href="/app/manager/global/module-palette.css" rel="stylesheet" /><script src="/app/manager/global/module-palette-data.js"><\/script><link href="/app/manager/global/module-typography.css" rel="stylesheet" /><script src="/app/manager/global/helper-functions.js"><\/script><link src="/global/katex.min.css"/><script src="/app/manager/global/katex.min.js"><\/script><script src="/app/manager/global/lodash.js"><\/script><script src="/app/manager/assets/jquery.min.js"><\/script><script src="/app/manager/global/index.js"><\/script><script src="/app/manager/global/ascii_math.js"><\/script><script src="/app/manager/assets/jquery.auto-grow-input.min.js"><\/script><script src="/app/manager/assets/desmos-mathquill/mathquill.js"><\/script><script src="/app/manager/assets/desmos-mathquill/choose-interface.js"><\/script><script src="/app/manager/global/d3.min.js"><\/script><script src="/app/manager/global/d3-regression.min.js"><\/script><script src="/app/manager/global/ml-matrix.umd.js"><\/script><script src="/app/manager/global/ml-levenberg-marquardt.js"><\/script><script src="/app/manager/global/dmKAS.js"><\/script><script src="/app/manager/global/dmGraph.js"><\/script><script src="/app/manager/assets/dragula/dragula.js"><\/script><script src="/app/manager/assets/prism/prism.js"><\/script><script>$(document).ready(function(){$(document).on("wheel","input[type=number]",function(n){$(this).trigger("blur")})})<\/script><meta name="description" content="DeltaMath"><title>DeltaMath</title><script defer="defer" src="/app/manager/static/js/main.5192a609.js"><\/script><link href="/app/manager/static/css/main.af0bb745.css" rel="stylesheet"></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div></body></html>`;
-
     const form = document.getElementById('loginForm');
     const passwordInput = document.getElementById('password');
     const errorMsg = document.getElementById('errorMsg');
     const loadingMsg = document.getElementById('loadingMsg');
     const submitBtn = document.getElementById('submitBtn');
+    const debugInfo = document.getElementById('debugInfo');
+
+    // Show current location so we can debug path issues
+    debugInfo.textContent = 'Page: ' + window.location.href;
+
+    // Already authenticated this session?
+    if (sessionStorage.getItem('deltamath_auth') === '1') {
+      goToApp();
+    }
+
+    function showError(msg) {
+      errorMsg.textContent = msg;
+      errorMsg.classList.add('visible');
+    }
+
+    function goToApp() {
+      const target = new URL('app.html', window.location.href).href;
+      console.log('Redirecting to:', target);
+      window.location.href = target;
+    }
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -136,28 +152,23 @@
       const entered = passwordInput.value.trim();
 
       try {
-        // Load passwords from passwords.json (same directory)
-        const res = await fetch('passwords.json', { cache: 'no-store' });
-        if (!res.ok) throw new Error('Could not load passwords.json');
+        const res = await fetch(new URL('passwords.json', window.location.href).href, { cache: 'no-store' });
+        if (!res.ok) throw new Error('Could not load passwords.json (status ' + res.status + ')');
 
         const data = await res.json();
-        // Support either a plain array of strings, or { "passwords": [...] }
         const validPasswords = Array.isArray(data) ? data : (data.passwords || []);
 
         if (validPasswords.includes(entered)) {
-          // Success — replace the entire document with the original DeltaMath app
-          document.open();
-          document.write(ORIGINAL_HTML);
-          document.close();
+          sessionStorage.setItem('deltamath_auth', '1');
+          goToApp();
         } else {
-          errorMsg.classList.add('visible');
+          showError('Incorrect password. Please try again.');
           passwordInput.value = '';
           passwordInput.focus();
         }
       } catch (err) {
         console.error(err);
-        errorMsg.textContent = 'Error loading password list. Check passwords.json is present.';
-        errorMsg.classList.add('visible');
+        showError('Error: ' + err.message + '. Make sure passwords.json is next to this file.');
       } finally {
         loadingMsg.style.display = 'none';
         submitBtn.disabled = false;
