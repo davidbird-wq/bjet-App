@@ -71,16 +71,9 @@
       cursor: pointer;
       transition: background 0.2s, transform 0.1s;
     }
-    button:hover {
-      background: #3a6bb0;
-    }
-    button:active {
-      transform: scale(0.98);
-    }
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
+    button:hover { background: #3a6bb0; }
+    button:active { transform: scale(0.98); }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
     .error {
       margin-top: 1rem;
       padding: 0.75rem;
@@ -92,9 +85,7 @@
       text-align: center;
       display: none;
     }
-    .error.visible {
-      display: block;
-    }
+    .error.visible { display: block; }
     .loading {
       text-align: center;
       margin-top: 1rem;
@@ -105,7 +96,7 @@
   </style>
 </head>
 <body>
-  <div class="login-box">
+  <div class="login-box" id="loginBox">
     <h1>DeltaMath</h1>
     <p class="subtitle">Enter password to continue</p>
     <form id="loginForm">
@@ -118,8 +109,10 @@
   </div>
 
   <script>
-    // The original DeltaMath index.html content (to be written after successful auth)
-    const ORIGINAL_HTML = `<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="apple-touch-icon" sizes="180x180" href="/app/manager/apple-touch-icon.png" /><link rel="icon" type="image/png" sizes="32x32" href="/app/manager/favicon-32x32.png" /><link rel="icon" type="image/png" sizes="16x16" href="/app/manager/favicon-16x16.png" /><link rel="manifest" href="/app/manager/site.webmanifest" /><link rel="mask-icon" href="/app/manager/safari-pinned-tab.svg" color="#273e4f" /><link rel="stylesheet" href="/app/manager/assets/desmos-mathquill/mathquill.css" /><link rel="stylesheet" href="/app/manager/assets/prism/prism.css" /><link href="/app/manager/assets/fontawesome-5/css/fontawesome.min.css" rel="stylesheet" /><link href="/app/manager/assets/fontawesome-5/css/solid.min.css" rel="stylesheet" /><link href="/app/manager/assets/fontawesome-5/css/regular.min.css" rel="stylesheet" /><link href="/app/manager/assets/fontawesome-5/css/light.min.css" rel="stylesheet" /><link href="/app/manager/assets/fontawesome-5/css/duotone.min.css" rel="stylesheet" /><link href="/app/manager/fonts.css" rel="stylesheet" /><meta name="msapplication-TileColor" content="#2b5797"/><meta name="theme-color" content="#ffffff"/><script>window.legacyScriptErrors=[],window.addEventListener("error",function(r){var e=r.target&&"SCRIPT"===r.target.tagName?r.target.src:r.filename||"";window.legacyScriptErrors&&/\\/(global|assets)\\//.test(e)&&window.legacyScriptErrors.push({src:e,message:r.message||"failed to load"})},!0)<\/script><script src="/app/manager/assets/fastclick/lib/fastclick.js"><\/script><link href="/app/manager/global/module-palette.css" rel="stylesheet" /><script src="/app/manager/global/module-palette-data.js"><\/script><link href="/app/manager/global/module-typography.css" rel="stylesheet" /><script src="/app/manager/global/helper-functions.js"><\/script><link src="/global/katex.min.css"/><script src="/app/manager/global/katex.min.js"><\/script><script src="/app/manager/global/lodash.js"><\/script><script src="/app/manager/assets/jquery.min.js"><\/script><script src="/app/manager/global/index.js"><\/script><script src="/app/manager/global/ascii_math.js"><\/script><script src="/app/manager/assets/jquery.auto-grow-input.min.js"><\/script><script src="/app/manager/assets/desmos-mathquill/mathquill.js"><\/script><script src="/app/manager/assets/desmos-mathquill/choose-interface.js"><\/script><script src="/app/manager/global/d3.min.js"><\/script><script src="/app/manager/global/d3-regression.min.js"><\/script><script src="/app/manager/global/ml-matrix.umd.js"><\/script><script src="/app/manager/global/ml-levenberg-marquardt.js"><\/script><script src="/app/manager/global/dmKAS.js"><\/script><script src="/app/manager/global/dmGraph.js"><\/script><script src="/app/manager/assets/dragula/dragula.js"><\/script><script src="/app/manager/assets/prism/prism.js"><\/script><script>$(document).ready(function(){$(document).on("wheel","input[type=number]",function(n){$(this).trigger("blur")})})<\/script><meta name="description" content="DeltaMath"><title>DeltaMath</title><script defer="defer" src="/app/manager/static/js/main.5192a609.js"><\/script><link href="/app/manager/static/css/main.af0bb745.css" rel="stylesheet"></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div></body></html>`;
+    // Already authenticated this session?
+    if (sessionStorage.getItem('deltamath_auth') === '1') {
+      loadApp();
+    }
 
     const form = document.getElementById('loginForm');
     const passwordInput = document.getElementById('password');
@@ -136,19 +129,15 @@
       const entered = passwordInput.value.trim();
 
       try {
-        // Load passwords from passwords.json (same directory)
         const res = await fetch('passwords.json', { cache: 'no-store' });
         if (!res.ok) throw new Error('Could not load passwords.json');
 
         const data = await res.json();
-        // Support either a plain array of strings, or { "passwords": [...] }
         const validPasswords = Array.isArray(data) ? data : (data.passwords || []);
 
         if (validPasswords.includes(entered)) {
-          // Success — replace the entire document with the original DeltaMath app
-          document.open();
-          document.write(ORIGINAL_HTML);
-          document.close();
+          sessionStorage.setItem('deltamath_auth', '1');
+          loadApp();
         } else {
           errorMsg.classList.add('visible');
           passwordInput.value = '';
@@ -163,6 +152,59 @@
         submitBtn.disabled = false;
       }
     });
+
+    function loadApp() {
+      // Full document rewrite – most reliable for deferred scripts + Scramjet
+      const targetHTML = `<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
+		/>
+		<title>DeltaMath</title>
+		<link rel="shortcut icon" content="favicon.ico" />
+	
+		<script src="/scram/scramjet.all.js"><\/script>
+		<script src="/baremux/index.js"><\/script>
+		
+		<link rel="stylesheet" href="index.css" />
+		<script src="register-sw.js" defer><\/script>
+		<script src="search.js" defer><\/script>
+		<script src="index.js" defer><\/script>
+	</head>
+	<body>
+		<div title="Scramjet Logo" class="flex-center logo-wrapper header-center">
+			<img class="logo" src="sj.png" alt="Scramjet" />
+			<h1>Deltamath | Math done <i>right</i>. Depth, clarity, rigor.</h1>
+		</div>
+		<div class="flex-center desc left-margin">
+			<p>
+				DeltaMath is the #1 chosen teaching platform used by teachers.
+			</p>
+		</div>
+		<form id="sj-form" class="flex-center">
+			<input
+				id="sj-search-engine"
+				value="https://www.google.com/search?q=%s"
+				type="hidden"
+			/>
+			<input id="sj-address" type="text" placeholder="Find a lesson" />
+		</form>
+		<div class="desc left-margin">
+			<p id="sj-error"></p>
+			<pre id="sj-error-code"></pre>
+		</div>
+		<footer>
+		</footer>
+	</body>
+</html>`;
+
+      document.open();
+      document.write(targetHTML);
+      document.close();
+    }
   </script>
 </body>
 </html>
